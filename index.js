@@ -37,10 +37,10 @@ class Player {
 }
 
 class Platform {
-    constructor(){
+    constructor({x, y}){
         this.position = {
-            x:200,
-            y:100
+            x,
+            y
         }
         this.width = 200
         this.height = 20
@@ -53,7 +53,7 @@ class Platform {
 }
 
 const player = new Player()
-const platform = new Platform()
+const platforms = [new Platform({x: 200, y: 100}),  new Platform({x: 500, y: 200})]
 
 const keys = {
     right:{
@@ -68,23 +68,35 @@ function animate(){
     requestAnimationFrame(animate)
     c.clearRect(0, 0, canvas.width, canvas.height)
     player.update()
-    platform.draw()
+    platforms.forEach(platform => {
+        platform.draw()
+    })
 
-    if(keys.right.pressed){
+    if(keys.right.pressed && player.position.x < 400){
         player.velocity.x = 5
-    }else if (keys.left.pressed) {
+    }else if (keys.left.pressed && player.position.x > 100) {
         player.velocity.x = -5
-    } else{
+    }else{
         player.velocity.x = 0
+
+        platforms.forEach(platform => {
+            if(keys.right.pressed){
+                platform.position.x -= 5
+            }else if(keys.left.pressed){
+                platform.position.x += 5
+            }
+        })
     }
 
     //deteksi platform
-    if(player.position.y + player.height <= platform.position.y
-        && player.position.y + player.height + player.velocity.y >= platform.position.y
-        && player.position.x + player.width >= platform.width
-        && player.position.x <= platform.position.x + platform.width){
-        player.velocity.y = 0
-    }
+    platforms.forEach(platform => {
+        if(player.position.y + player.height <= platform.position.y //check tinggi player sejajar platform
+            && player.position.y + player.height + player.velocity.y >= platform.position.y //check tinggi player mellebihi platform
+            && player.position.x + player.width >= platform.position.x // check player di ujung sisi kanan platform
+            && player.position.x <= platform.position.x + platform.width){ //check player di ujung kiri platform
+            player.velocity.y = 0
+        }
+    })
 }
 animate()
 
