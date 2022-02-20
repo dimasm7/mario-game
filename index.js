@@ -64,32 +64,41 @@ const keys = {
     },
 }
 
+let scrollOffset = 0
 function animate(){
     requestAnimationFrame(animate)
     c.clearRect(0, 0, canvas.width, canvas.height)
     player.update()
-    platforms.forEach(platform => {
+    platforms.forEach((platform) => {
         platform.draw()
     })
 
-    if(keys.right.pressed && player.position.x < 400){
+    if(keys.right.pressed && player.position.x < 400){ //maju
         player.velocity.x = 5
-    }else if (keys.left.pressed && player.position.x > 100) {
+    }else if (keys.left.pressed && player.position.x > 100) { //balik
         player.velocity.x = -5
     }else{
         player.velocity.x = 0
 
-        platforms.forEach(platform => {
-            if(keys.right.pressed){
+        if(keys.right.pressed){
+            scrollOffset += 5
+            platforms.forEach((platform) => {
                 platform.position.x -= 5
-            }else if(keys.left.pressed){
+            })
+        }else if(keys.left.pressed){
+            scrollOffset -= 5
+            platforms.forEach((platform) => {
                 platform.position.x += 5
-            }
-        })
+            })
+        }
+    }
+
+    if(scrollOffset > 2000){
+        console.log('you win')
     }
 
     //deteksi platform
-    platforms.forEach(platform => {
+    platforms.forEach((platform) => {
         if(player.position.y + player.height <= platform.position.y //check tinggi player sejajar platform
             && player.position.y + player.height + player.velocity.y >= platform.position.y //check tinggi player mellebihi platform
             && player.position.x + player.width >= platform.position.x // check player di ujung sisi kanan platform
