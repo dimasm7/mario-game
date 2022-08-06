@@ -183,8 +183,6 @@ var Player = /*#__PURE__*/function () {
 
       if (this.position.y + this.velocity.y + this.height <= canvas.height) {
         this.velocity.y += gravity;
-      } else {
-        this.velocity.y = 0;
       }
     }
   }]);
@@ -262,6 +260,10 @@ var platforms = [new Platform({
   x: platformImage.width - 3,
   y: 470,
   image: platformImage
+}), new Platform({
+  x: platformImage.width * 2 + 100,
+  y: 470,
+  image: platformImage
 })];
 var genericObjects = [new GenericObject({
   x: -1,
@@ -281,6 +283,34 @@ var keys = {
   }
 };
 var scrollOffset = 0;
+
+function initgame() {
+  platformImage = createImage(_img_platform_png__WEBPACK_IMPORTED_MODULE_0__["default"]);
+  player = new Player();
+  platforms = [new Platform({
+    x: -1,
+    y: 470,
+    image: platformImage
+  }), new Platform({
+    x: platformImage.width - 3,
+    y: 470,
+    image: platformImage
+  }), new Platform({
+    x: platformImage.width * 2 + 100,
+    y: 470,
+    image: platformImage
+  })];
+  genericObjects = [new GenericObject({
+    x: -1,
+    y: -1,
+    image: createImage(_img_background_png__WEBPACK_IMPORTED_MODULE_2__["default"])
+  }), new GenericObject({
+    x: -1,
+    y: -1,
+    image: createImage(_img_hills_png__WEBPACK_IMPORTED_MODULE_1__["default"])
+  })];
+  scrollOffset = 0;
+}
 
 function animate() {
   requestAnimationFrame(animate);
@@ -320,10 +350,15 @@ function animate() {
         genericObject.position.x += 3;
       });
     }
-  }
+  } //win detect
+
 
   if (scrollOffset > 2000) {
     console.log('you win');
+  }
+
+  if (player.position.y > canvas.height) {
+    initgame();
   } //deteksi platform
 
 
